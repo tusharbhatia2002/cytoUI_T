@@ -2,12 +2,8 @@
 import React, { useState } from 'react';
 import { Stage, Layer, Rect } from 'react-konva';
 import ZoomSlider from './ZoomSlider';
-import PlotCreator from '../functionalComponents/Plotcreator';
 
-const Canvas = ({ channelNames,selectedPlotParams,
-  setSelectedPlotParams,
-  handlePlotCreation,
-  showPlotCreator}) => {
+const Canvas = ({ selectedPlot }) => {
   const [zoomLevel, setZoomLevel] = useState(1);
 
   const handleZoomChange = (newZoomLevel) => {
@@ -64,25 +60,11 @@ const Canvas = ({ channelNames,selectedPlotParams,
               fill="#ccc"
             />
           ))}
-          
-        
         </Layer>
       </Stage>
-      {console.log(showPlotCreator)}
-          {showPlotCreator && (
-            <div className="plot-creator-container">
-              <PlotCreator
-                selectedPlotParams={selectedPlotParams}
-                setSelectedPlotParams={setSelectedPlotParams}
-                channelNames={channelNames}
-                handlePlotCreation={handlePlotCreation}
-              />
-            </div>
-          )}
       <div className="zoom-slider-container bg-gray-800 py-2">
         <ZoomSlider zoomLevel={zoomLevel} onZoomChange={handleZoomChange} />
       </div>
-      
     </div>
   );
 };

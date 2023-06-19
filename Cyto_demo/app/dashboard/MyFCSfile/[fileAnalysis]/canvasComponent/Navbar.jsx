@@ -4,7 +4,7 @@ import MenuBar from "./MenuBar";
 import MenuBar2 from "./MenuBar2";
 import MenuBar3 from "./MenuBar3";
 
-const Navbar = ({ handleDotPlotClick }) => {
+const Navbar = () => {
   const [activeButton, setActiveButton] = useState(null);
 
   const handleButtonClick = (button) => {
@@ -49,7 +49,7 @@ const Navbar = ({ handleDotPlotClick }) => {
           Edit
         </button>
       </div>
-      {activeButton === "plots" && <MenuBar handleDotPlotClick={handleDotPlotClick} />}
+      {activeButton === "plots" && <MenuBar />}
       {activeButton === "gates" && <MenuBar2 />}
       {activeButton === "edit" && <MenuBar3/>}
     </nav>

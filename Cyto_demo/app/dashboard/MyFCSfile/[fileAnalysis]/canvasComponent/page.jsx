@@ -1,7 +1,7 @@
 "use client"
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import { FaHome, FaFileAlt, FaUsers, FaCog, FaSignOutAlt } from 'react-icons/fa';
-import HeaderProfileNav from '..//HeaderProfileNav';
+import HeaderProfileNav from '../../../HeaderProfileNav.jsx';
 import Link from "next/Link";
 import CanvasPage from "./canvaspage";
 
@@ -32,7 +32,7 @@ const Page = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/MyFCSfile" className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded">
+                <Link href="/dashboard/MyFCSfile" className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded">
                   <FaFileAlt className="mr-2" />
                   My FCS File
                 </Link>
@@ -77,8 +77,8 @@ const Page = () => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 bg-gradient-to-r from-cyan-100 to-blue-300 overflow-y-auto overflow-x-auto mt-0 px-0">
-        <div className="flex-grow mt-0 px-0">
+        <div className="bg-gradient-to-r from-cyan-100 to-blue-300 overflow-y-auto overflow-x-auto mt-0 px-0">
+        <div className="mt-0 px-0 w-screen">
             <CanvasPage />
         </div>
         </div>

@@ -1,8 +1,7 @@
 "use client"
 import { useState } from "react";
-import axios from "axios";
-import { faUser, faLock } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FiUser } from "react-icons/fi";
+import { IoMdLock } from "react-icons/io";
 
 const Login = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -10,6 +9,7 @@ const Login = () => {
     username: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleInputChange = (e) => {
     setFormData({
@@ -23,12 +23,20 @@ const Login = () => {
     setSubmitting(true);
 
     try {
-      const res = await axios.post("/api/login", formData); // Updated API endpoint
-      if (res.status === 200) {
-        const { token } = res.data; // Assuming the JWT token is returned in the response
-        localStorage.setItem("token", token); // Store the token in local storage or a secure cookie
-        console.log("Login successful!");
-        // Redirect to the authenticated route or perform any other necessary actions
+      const { username, password } = formData;
+      const encodedUsername = encodeURIComponent(username);
+      const encodedPassword = encodeURIComponent(password);
+
+      // Check if the entered credentials match any of the valid values
+      if (
+        (encodedUsername === "admin" && encodedPassword === "password") ||
+        (encodedUsername === "tushar02" && encodedPassword === "tb1002") ||
+        (encodedUsername === "rahul20" && encodedPassword === "xyz12")
+      ) {
+        localStorage.setItem("isLoggedIn", "true"); // Set a flag in local storage to indicate successful login
+        window.location.href = `/dashboard?username=${encodedUsername}&password=${encodedPassword}`; // Redirect to the dashboard page with encoded credentials in the URL
+      } else {
+        setErrorMessage("Incorrect username or password"); // Set the error message
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -41,11 +49,17 @@ const Login = () => {
     <div className="bg-gradient-to-r from-cyan-100 to-blue-300 min-h-screen flex items-center justify-center">
       <div className="flex flex-col items-center justify-center min-h-screen">
         <a href="/" className="text-4xl font-bold text-gray-800 mb-8">
-            CytoUI
-          </a>
+          CytoUI
+        </a>
         <div className="bg-white p-8 rounded shadow-md w-96">
           <h1 className="text-3xl font-bold mb-4">Login</h1>
           <p className="text-gray-500 mb-8">Sign In to your account</p>
+
+          {errorMessage && (
+            <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+              {errorMessage}
+            </div>
+          )}
 
           <form onSubmit={login}>
             <div className="mb-6">
@@ -57,7 +71,7 @@ const Login = () => {
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FontAwesomeIcon icon={faUser} className="text-gray-400" />
+                  <FiUser className="text-gray-400" />
                 </div>
                 <input
                   id="username"
@@ -81,7 +95,7 @@ const Login = () => {
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FontAwesomeIcon icon={faLock} className="text-gray-400" />
+                  <IoMdLock className="text-gray-400" />
                 </div>
                 <input
                   id="password"
@@ -124,4 +138,5 @@ const Login = () => {
 };
 
 export default Login;
+
 

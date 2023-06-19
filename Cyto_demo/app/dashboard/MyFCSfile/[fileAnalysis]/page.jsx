@@ -3,9 +3,9 @@
 import React ,{useState,useEffect}from 'react';
 import { FaHome, FaFileAlt, FaUsers, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import Link from "next/Link";
-import HeaderProfileNav from "..//HeaderProfileNav"
+import HeaderProfileNav from '@/app/HeaderProfileNav';
 import axios from 'axios';
-import LoadingIndicator from '../functionalComponents/LoadingIndicator';
+import LoadingIndicator from '../../../functionalComponents/LoadingIndicator';
 // import { useRouter } from 'next/router'
 
 const SpilloverMatrix = () => {
@@ -166,7 +166,7 @@ const FileAnalysis = () => {
             />
             <button>
             <a
-              href="/canvasComponent"
+              href="/dasboard/MyFCSfile/1/canvasComponent"
               className="text-white hover:text-cyan-300 text-lg font-medium bg-blue-700 rounded-lg px-3"
             >
               Open in Canvas
