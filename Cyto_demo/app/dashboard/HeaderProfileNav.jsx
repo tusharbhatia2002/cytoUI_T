@@ -1,6 +1,8 @@
+'use client'
 import React, { useState } from "react";
-
+import {useSession} from 'next-auth/react';
 const HeaderProfileNav = () => {
+  const {data: session}=useSession()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleDropdownToggle = () => {
@@ -16,7 +18,7 @@ const HeaderProfileNav = () => {
         type="button"
       >
         <span className="absolute inset-0 flex items-center justify-center text-white font-bold">
-          A
+        {session?.user?.name.slice(0,1)}
         </span>
         <svg
           className="w-4 h-4 ml-2"
@@ -40,8 +42,8 @@ const HeaderProfileNav = () => {
           className="z-10 absolute right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700"
         >
           <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-            <div>Annie Green</div>
-            <div class="font-medium truncate">name@flowbite.com</div>
+            <div>{session?.user?.name}</div>
+            <div class="font-medium truncate">{session?.user?.email}</div>
           </div>
           <ul
             className="py-2 text-sm text-gray-700 dark:text-gray-200"

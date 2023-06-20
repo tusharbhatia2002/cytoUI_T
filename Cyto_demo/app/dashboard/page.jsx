@@ -80,7 +80,7 @@ export default function Dashboard() {
               </li>
               <li>
                 <button
-                  onClick={handleSignOut}
+                  onClick={() => signOut()}
                   className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded"
                 >
                   <FaSignOutAlt className="mr-2" />

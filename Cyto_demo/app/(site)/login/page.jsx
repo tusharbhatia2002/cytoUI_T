@@ -96,7 +96,11 @@ export default function Login() {
                 Sign in
               </button>
             </div>
+
           </form>
+          <button onClick={() => signIn('github')} className="bg-black text-white w-full">Sign In with github</button>
+          <button onClick={()=>signIn('google')} className="bg-black text-white w-full">Sign In with google</button>
+          
 
           <p className="mt-10 text-center text-sm text-gray-500">
             Not a member?{' '}

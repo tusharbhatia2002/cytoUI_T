@@ -12,10 +12,12 @@ export const authOptions = {
         GithubProvider({
             clientId: process.env.GITHUB_ID,
             clientSecret: process.env.GITHUB_SECRET,
+            prompt: 'select_account',
         }),
         GoogleProvider({
             clientId: process.env.GOOGLE_ID,
             clientSecret: process.env.GOOGLE_SECRET,
+            login:true,
         }),
         CredentialsProvider({
             name: "credentials",

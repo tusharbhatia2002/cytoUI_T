@@ -1,23 +1,28 @@
 'use client'
 
 import React,{useState,useEffect,useContext} from 'react';
+import {useSession, signOut} from 'next-auth/react';
 import { FaHome, FaFileAlt, FaUsers, FaCog, FaSignOutAlt } from 'react-icons/fa';
-import auth from '@/app/api/auth';
 import Link from "next/Link";
 import HeaderProfileNav from '../HeaderProfileNav';
 import FileUploaderButton from '@/app/functionalComponents/Fileuploaderbutton';
 import LoadingIndicator from '@/app/functionalComponents/LoadingIndicator';
+import auth from '@/app/api/auth';
+
 
 // import useStoredChannelNames from '../useStoredChannelNames';
 // import useChannelStore from '../store';
 import axios from 'axios';
-const MyFCSfile = () => {
+export default function MyFCSfile() {
+
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (!session) {
+      window.location.href = '/login'; // Redirect to login page if not authenticated
+    }
+  }, [session]);
   
-
-  const handleSignOut = () => {
-    signOut({ callbackUrl: '/' }); // Sign out and redirect to home page
-  };
-
   const [channelNames, setChannelNames] = useState([]);
   const [isFileSelected, setFileSelected] = useState(false);
   const [isFileParsed, setFileParsed] = useState(false);
@@ -87,44 +92,62 @@ const MyFCSfile = () => {
       {/* Sidebar */}
       <div className="w-64 bg-white">
         <div className="flex items-center justify-between p-4 text-3xl font-extrabold ...">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-indigo-400">CytoUI</span>
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-indigo-400">
+            CytoUI
+          </span>
         </div>
         <nav className="mt-8">
           <div className="px-4">
-            <h2 className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Navigation</h2>
+            <h2 className="text-xs text-gray-500 uppercase tracking-wide font-semibold">
+              Navigation
+            </h2>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link href="/dashboard" className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded">
+                <Link
+                  href="/dashboard"
+                  className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded"
+                >
                   <FaHome className="mr-2" />
                   Dashboard
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/MyFCSfile" className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded">
+                <Link
+                  href="/dashboard/MyFCSfile"
+                  className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded"
+                >
                   <FaFileAlt className="mr-2" />
                   My FCS File
                 </Link>
               </li>
             </ul>
           </div>
-          <div className="mt-10 px-4">
-            <h2 className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Admin</h2>
+          <div className="mt-8 px-4">
+            <h2 className="text-xs text-gray-500 uppercase tracking-wide font-semibold">
+              Admin
+            </h2>
             <ul className="mt-4 space-y-2">
               <li>
-                <a href="/" className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded">
+                <a
+                  href="/"
+                  className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded"
+                >
                   <FaUsers className="mr-2" />
                   Members
                 </a>
               </li>
               <li>
-                <a href="/" className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded">
+                <a
+                  href="/"
+                  className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded"
+                >
                   <FaCog className="mr-2" />
                   Settings
                 </a>
               </li>
               <li>
                 <button
-                  onClick={handleSignOut}
+                  onClick={() => signOut()}
                   className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded"
                 >
                   <FaSignOutAlt className="mr-2" />
@@ -223,5 +246,5 @@ const MyFCSfile = () => {
 
 
 
-export default MyFCSfile;
+
 export const getServerSideProps = auth;
