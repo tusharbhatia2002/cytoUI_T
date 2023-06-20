@@ -29,7 +29,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className= "flex w-full">
+    <div className="flex">
       <aside className="bg-gray-700 h-full w-8 flex flex-col justify-start">
         <button
           className={`nav-button rounded-md mr-0 text-xs my-2 ${

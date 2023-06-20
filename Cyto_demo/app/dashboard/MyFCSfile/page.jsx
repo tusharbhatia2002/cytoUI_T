@@ -29,7 +29,7 @@ export default function MyFCSfile() {
   const [isLoading, setLoading] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState('');
   const [uploadedFileSize, setUploadedFileSize] = useState('');
-  // const channelNames = useChannelStore((state) => state.channelNames);
+  
   // const setChannelNames = useChannelStore((state) => state.setChannelNames);
 
   // const ColumnNamesContext = createContext([]);

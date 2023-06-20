@@ -1,6 +1,12 @@
-import React from "react";
-
+import React,{useEffect} from "react";
+import usePlotStore from "../store";
 const MenuBar = () => {
+  const handlePlotClick = usePlotStore((state) => state.handlePlotClick);
+  // console.log(handleDotPlotClick)
+  const handleClick = () => {
+    console.log("Dot plot clicked");
+    handlePlotClick();
+  };
    
   return (
     <div className="bg-gray-200 flex">
@@ -18,7 +24,7 @@ const MenuBar = () => {
               /></center>
               Histogram
             </button>
-            <button className="py-2 px-2 rounded-md hover:bg-yellow-200 active:bg-yellow-200">
+            <button className="py-2 px-2 rounded-md hover:bg-yellow-200 active:bg-yellow-200" onClick={handleClick}>
               <img
                 className="custom-icon"
                 width="28" height="28"
