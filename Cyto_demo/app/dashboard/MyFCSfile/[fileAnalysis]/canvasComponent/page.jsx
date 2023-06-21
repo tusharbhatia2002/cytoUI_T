@@ -1,7 +1,7 @@
 "use client"
 import React, { useState,useEffect } from 'react';
 import { FaHome, FaFileAlt, FaUsers, FaCog, FaSignOutAlt } from 'react-icons/fa';
-import HeaderProfileNav from '..//HeaderProfileNav';
+import HeaderProfileNav from '../../../HeaderProfileNav';
 import Link from "next/Link";
 import CanvasPage from "./canvaspage";
 

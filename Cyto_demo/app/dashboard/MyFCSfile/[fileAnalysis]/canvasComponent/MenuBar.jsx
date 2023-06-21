@@ -1,5 +1,5 @@
 import React,{useEffect} from "react";
-import usePlotStore from "../store";
+import usePlotStore from "@/app/store";
 const MenuBar = () => {
   const handlePlotClick = usePlotStore((state) => state.handlePlotClick);
   // console.log(handleDotPlotClick)

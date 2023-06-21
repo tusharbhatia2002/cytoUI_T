@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-import pandas as pd
+import pandas as pd 
 import matplotlib.pyplot as plt
 import mpld3
 import subprocess
@@ -18,6 +18,7 @@ import asyncio
 import io
 import base64
 from pymongo import MongoClient
+import certifi
 # import flowkit as fk
 
 app = FastAPI()
@@ -45,7 +46,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 
 # MOngoDB
 mongodb_connection_string="mongodb+srv://ojas21101:ojas1234@clusterviz.tjmyjct.mongodb.net/?retryWrites=true&w=majority"
-mongo_client = MongoClient(mongodb_connection_string)
+mongo_client = MongoClient(mongodb_connection_string, tlsCAFile=certifi.where())
 db = mongo_client["clusterviz"]
 @app.post("/api/convert-fcs-to-csv")
 async def convert_fcs_to_csv(file: UploadFile = File(...) ):

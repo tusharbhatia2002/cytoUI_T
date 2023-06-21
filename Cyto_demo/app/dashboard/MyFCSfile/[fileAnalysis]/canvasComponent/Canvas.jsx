@@ -2,9 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { fabric } from 'fabric';
 import ZoomSlider from './ZoomSlider';
-import PlotCreator from '../functionalComponents/Plotcreator';
-import ServerRenderedComponent from '../functionalComponents/PlotDisplayer';
-import LoadingIndicator from '../functionalComponents/LoadingIndicator';
+import PlotCreator from '@/app/functionalComponents/Plotcreator';
+import ServerRenderedComponent from '@/app/functionalComponents/PlotDisplayer';
+import LoadingIndicator from '@/app/functionalComponents/LoadingIndicator';
 
 const Canvas = ({
   channelNames,

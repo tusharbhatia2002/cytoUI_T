@@ -4,10 +4,11 @@
   import Navbar from "./Navbar";
   import MenuBar from "./MenuBar";
   import Sidebar from "./Sidebar";
-  import usePlotStore from "../store";
-  import PlotCreator from "../functionalComponents/Plotcreator";
-  import ServerRenderedComponent from "../functionalComponents/PlotDisplayer";
-  import LoadingIndicator from "../functionalComponents/LoadingIndicator";
+  import usePlotStore from "@/app/store";
+  // import PlotCreator from "../functionalComponents/Plotcreator";
+  // import ServerRenderedComponent from "../functionalComponents/PlotDisplayer";
+
+  // import LoadingIndicator from "../functionalComponents/LoadingIndicator";
   import axios from 'axios';
 
   const CanvasPage = () => {
