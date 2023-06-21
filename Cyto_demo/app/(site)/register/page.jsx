@@ -3,45 +3,48 @@
 import { useState } from "react"
 import axios from "axios"
 import { toast } from "react-hot-toast"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faEnvelope, faUser } from "@fortawesome/free-solid-svg-icons";
+import { IoMdLock } from "react-icons/io";
 
 export default function Register() {
-    const [data, setData] = useState({
-         name: '',
-          email: '',
-           password: ''
-         })
+  const [data, setData] = useState({
+    name: '',
+    email: '',
+    password: ''
+  })
 
-         const registerUser = async (e) => {
-          e.preventDefault();
-          axios.post('/api/register', data)
-            .then(() => {
-              toast.success('User has been registered!');
-              window.location.href = `/login`
-            })
-            .catch(() => toast.error('Something went wrong!'));
-        };
+  const registerUser = async (e) => {
+    e.preventDefault();
+    axios.post('/api/register', data)
+      .then(() => {
+        toast.success('User has been registered!');
+        window.location.href = `/login`
+      })
+      .catch(() => toast.error('Something went wrong!'));
+  };
 
-    return (
-      <>
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-white">
-          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            {/* <img
-              className="mx-auto h-10 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-              alt="Your Company"
-            /> */}
-            <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-              Register for an account
-            </h2>
-          </div>
-  
-          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form className="space-y-6" onSubmit={registerUser}>
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+  return (
+    <>
+      <div className="bg-gradient-to-r from-cyan-100 to-blue-300 min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center min-h-screen">
+          <a href="/" className="text-4xl font-bold text-gray-800 mb-8">CytoUI</a>
+          <div className="bg-white p-8 rounded shadow-md w-96">
+            <h1 className="text-3xl text-black font-bold mb-4">Register</h1>
+            <p className="text-gray-500 mb-8">Create your account</p>
+
+            <form onSubmit={registerUser}>
+              <div className="mb-6">
+                <label
+                  htmlFor="name"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Name
                 </label>
-                <div className="mt-2">
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FontAwesomeIcon icon={faUser} className="text-gray-400" />
+                  </div>
                   <input
                     id="name"
                     name="name"
@@ -49,15 +52,23 @@ export default function Register() {
                     required
                     value={data.name}
                     onChange={e => setData({ ...data, name: e.target.value })}
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-2 text-black sm:text-sm border-gray-300 rounded-md"
+                    placeholder="Username"
                   />
                 </div>
               </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                  Email address
+
+              <div className="mb-6">
+                <label
+                  htmlFor="email"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Email
                 </label>
-                <div className="mt-2">
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FontAwesomeIcon icon={faEnvelope} className="text-gray-400" />
+                  </div>
                   <input
                     id="email"
                     name="email"
@@ -66,23 +77,23 @@ export default function Register() {
                     required
                     value={data.email}
                     onChange={e => setData({ ...data, email: e.target.value })}
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-2 text-black sm:text-sm border-gray-300 rounded-md"
+                    placeholder="Email"
                   />
                 </div>
               </div>
-  
-              <div>
-                <div className="flex items-center justify-between">
-                  <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                    Password
-                  </label>
-                  <div className="text-sm">
-                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                      Forgot password?
-                    </a>
+
+              <div className="mb-6">
+                <label
+                  htmlFor="password"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Password
+                </label>
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <IoMdLock className="text-gray-400" />
                   </div>
-                </div>
-                <div className="mt-2">
                   <input
                     id="password"
                     name="password"
@@ -91,31 +102,28 @@ export default function Register() {
                     required
                     value={data.password}
                     onChange={e => setData({ ...data, password: e.target.value })}
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-2 text-black sm:text-sm border-gray-300 rounded-md"
+                    placeholder="Password"
                   />
                 </div>
               </div>
-  
-              <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  Register
-                </button>
-              </div>
-            </form>
 
-            
-  
-            <p className="mt-10 text-center text-sm text-gray-500">
-              Already a member?{' '}
-              <a href="/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-                Log In
-              </a>
-            </p>
+              <button
+                type="submit"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Register
+              </button>
+              <p className="text-gray-500 text-sm mt-4">
+                Already have an account?{" "}
+                <a href="/login" className="text-blue-500 text-sm hover:underline">
+                  Login now
+                </a>
+              </p>
+            </form>
           </div>
         </div>
-      </>
-    )
-  }
+      </div>
+    </>
+  )
+}

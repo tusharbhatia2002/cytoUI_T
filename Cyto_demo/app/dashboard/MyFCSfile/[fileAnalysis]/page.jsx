@@ -166,7 +166,7 @@ const FileAnalysis = () => {
             />
             <button>
             <a
-              href="/dasboard/MyFCSfile/1/canvasComponent"
+              href="/dashboard/MyFCSfile/1/canvasComponent"
               className="text-white hover:text-cyan-300 text-lg font-medium bg-blue-700 rounded-lg px-3"
             >
               Open in Canvas

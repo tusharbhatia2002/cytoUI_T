@@ -10,8 +10,7 @@ import LoadingIndicator from '@/app/functionalComponents/LoadingIndicator';
 import auth from '@/app/api/auth';
 
 
-// import useStoredChannelNames from '../useStoredChannelNames';
-// import useChannelStore from '../store';
+//;
 import axios from 'axios';
 export default function MyFCSfile() {
 
@@ -23,17 +22,14 @@ export default function MyFCSfile() {
     }
   }, [session]);
   
-  const [channelNames, setChannelNames] = useState([]);
+  const [channelNames,setChannelNames]=useState([])
   const [isFileSelected, setFileSelected] = useState(false);
   const [isFileParsed, setFileParsed] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState('');
   const [uploadedFileSize, setUploadedFileSize] = useState('');
   
-  // const setChannelNames = useChannelStore((state) => state.setChannelNames);
-
-  // const ColumnNamesContext = createContext([]);
-  
+ 
 
   const handleFileDrop = async (acceptedFiles) => {
     const file = acceptedFiles[0];
@@ -47,7 +43,7 @@ export default function MyFCSfile() {
 
       if (response.status === 200) {
         const bjhhj = response.data.columnNames;
-        console.log(channelNames);
+        console.log(bjhhj);
         setChannelNames(bjhhj);
         setFileParsed(true);
         setUploadedFileName(file.name);

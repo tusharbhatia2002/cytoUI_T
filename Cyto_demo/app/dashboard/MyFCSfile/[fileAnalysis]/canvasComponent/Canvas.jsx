@@ -19,6 +19,7 @@ const Canvas = ({
   const [zoomLevel, setZoomLevel] = useState(1);
   const canvasRef = useRef(null);
   const fabricCanvas = useRef(null);
+  const imageObject = useRef(null);
 
   const handleZoomChange = (newZoomLevel) => {
     // Limit the zoom range between 1 and 2
@@ -28,6 +29,8 @@ const Canvas = ({
       newZoomLevel = 2;
     }
     setZoomLevel(newZoomLevel);
+    fabricCanvas.current.setZoom(newZoomLevel);
+    fabricCanvas.current.renderAll();
   };
 
   useEffect(() => {
@@ -76,6 +79,30 @@ const Canvas = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (imageData) {
+      fabric.Image.fromURL(`data:image/png;base64,${imageData}`, (img) => {
+        imageObject.current = img;
+        fabricCanvas.current.add(imageObject.current);
+        fabricCanvas.current.renderAll();
+
+        // Enable controls for the image
+        imageObject.current.set({
+          selectable: true,
+          evented: true,
+          hasControls: true,
+          hasBorders: true,
+          lockScalingFlip: true,
+          lockRotation: true
+        });
+
+        // Set initial position of the image in the canvas center
+        imageObject.current.center();
+        fabricCanvas.current.renderAll();
+      });
+    }
+  }, [imageData]);
+
   return (
     <div className="canvas-container w-full overflow-hidden bg-white">
       {/* <div className="menubar h-16 bg-gray-300">Menubar</div> */}
@@ -98,10 +125,9 @@ const Canvas = ({
         ) : (
           imageData && (
             <div className="absolute bottom-2 left-4 w-82 h-82 bg-gray-200 bg-transparent z-10 mx-4 my-2 px-6 py-2">
-  {/* <h2 className="text-2xl font-bold mb-4">Plot</h2> */}
-  <ServerRenderedComponent imageData={imageData} resetPlot={resetPlot} />
-</div>
-
+              {/* <h2 className="text-2xl font-bold mb-4">Plot</h2> */}
+              <ServerRenderedComponent resetPlot={resetPlot} />
+            </div>
           )
         )}
       </div>
