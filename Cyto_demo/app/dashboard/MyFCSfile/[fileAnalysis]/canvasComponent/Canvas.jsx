@@ -17,6 +17,8 @@ const Canvas = ({
   isLoadingPlot
 }) => {
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [showCreatePlotButton, setShowCreatePlotButton] = useState(false);
+  const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const canvasRef = useRef(null);
   const fabricCanvas = useRef(null);
   const imageObject = useRef(null);
@@ -31,6 +33,20 @@ const Canvas = ({
     setZoomLevel(newZoomLevel);
     fabricCanvas.current.setZoom(newZoomLevel);
     fabricCanvas.current.renderAll();
+  };
+
+  const handleCreatePlot = () => {
+    // Call the plot creation function here
+    handlePlotCreation();
+  };
+
+  const handleCanvasDoubleClick = (event) => {
+    setShowCreatePlotButton(true);
+    setButtonPosition({ x: event.pointer.x, y: event.pointer.y });
+  };
+
+  const handleCanvasClick = () => {
+    setShowCreatePlotButton(false);
   };
 
   useEffect(() => {
@@ -74,7 +90,12 @@ const Canvas = ({
 
     fabricCanvas.current.renderAll();
 
+    fabricCanvas.current.on('mouse:dblclick', handleCanvasDoubleClick);
+    fabricCanvas.current.on('mouse:down', handleCanvasClick);
+
     return () => {
+      fabricCanvas.current.off('mouse:dblclick', handleCanvasDoubleClick);
+      fabricCanvas.current.off('mouse:down', handleCanvasClick);
       fabricCanvas.current.dispose();
     };
   }, []);
@@ -105,9 +126,29 @@ const Canvas = ({
 
   return (
     <div className="canvas-container w-full overflow-hidden bg-white">
-      {/* <div className="menubar h-16 bg-gray-300">Menubar</div> */}
-      <div className="relative">
+      <div
+        className="relative"
+        style={{ cursor: showCreatePlotButton ? 'auto' : 'crosshair' }}
+      >
         <canvas ref={canvasRef} className="mb-4" />
+        {showCreatePlotButton && (
+          <div
+            className="absolute left-0 top-0 bg-blue-500 text-white rounded"
+            style={{
+              left: buttonPosition.x,
+              top: buttonPosition.y,
+              padding: '4px',
+              zIndex: 1,
+            }}
+          >
+            <PlotCreator
+              selectedPlotParams={selectedPlotParams}
+              setSelectedPlotParams={setSelectedPlotParams}
+              channelNames={channelNames}
+              handlePlotCreation={handlePlotCreation}
+            />
+          </div>
+        )}
         {showPlotCreator && (
           <div className="absolute top-5 left-4 w-90 h-150 bg-gray-200 bg-opacity-40 z-10 mx-4 my-5 px-10 py-10 ">
             <PlotCreator
@@ -125,7 +166,6 @@ const Canvas = ({
         ) : (
           imageData && (
             <div className="absolute bottom-2 left-4 w-82 h-82 bg-gray-200 bg-transparent z-10 mx-4 my-2 px-6 py-2">
-              {/* <h2 className="text-2xl font-bold mb-4">Plot</h2> */}
               <ServerRenderedComponent resetPlot={resetPlot} />
             </div>
           )
@@ -139,4 +179,3 @@ const Canvas = ({
 };
 
 export default Canvas;
-
