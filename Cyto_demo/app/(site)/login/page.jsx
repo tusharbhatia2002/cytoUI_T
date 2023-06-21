@@ -4,8 +4,8 @@ import { useState, useEffect } from "react"
 import { signIn, useSession } from 'next-auth/react'
 import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
-
-
+import { FiUser, FiLock } from "react-icons/fi";
+import { SiGithub, SiGoogle } from "react-icons/si";
 
 export default function Login() {
   const session = useSession();
@@ -35,21 +35,24 @@ export default function Login() {
   };
 
   return (
-    <>
-      <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-white">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 text-gray-900">
-            Sign in to your account
-          </h2>
-        </div>
+    <div className="bg-gradient-to-r from-cyan-100 to-blue-300 min-h-screen flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <a href="/" className="text-4xl font-bold text-gray-800 mb-8">
+          CytoUI
+        </a>
+        <div className="bg-white p-8 rounded shadow-md w-96">
+          <h1 className="text-3xl font-bold mb-4">Login</h1>
+          <p className="text-gray-500 mb-8">Sign In to your account</p>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={loginUser}>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+            <div className="mb-6">
+              <label htmlFor="email" className="text-sm font-medium text-gray-700">
                 Email address
               </label>
-              <div className="mt-2">
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiUser className="text-gray-400" />
+                </div>
                 <input
                   id="email"
                   name="email"
@@ -58,14 +61,15 @@ export default function Login() {
                   value={data.email}
                   onChange={(e) => setData({ ...data, email: e.target.value })}
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-2 text-black sm:text-sm border-gray-300 rounded-md"
+                  placeholder="Email address"
                 />
               </div>
             </div>
 
-            <div>
+            <div className="mb-6">
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                <label htmlFor="password" className="text-sm font-medium text-gray-700">
                   Password
                 </label>
                 <div className="text-sm">
@@ -74,7 +78,10 @@ export default function Login() {
                   </a>
                 </div>
               </div>
-              <div className="mt-2">
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiLock className="text-gray-400" />
+                </div>
                 <input
                   id="password"
                   name="password"
@@ -83,7 +90,8 @@ export default function Login() {
                   required
                   value={data.password}
                   onChange={(e) => setData({ ...data, password: e.target.value })}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-2 text-black sm:text-sm border-gray-300 rounded-md"
+                  placeholder="Password"
                 />
               </div>
             </div>
@@ -91,25 +99,30 @@ export default function Login() {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 Sign in
               </button>
             </div>
 
           </form>
-          <button onClick={() => signIn('github')} className="bg-black text-white w-full">Sign In with github</button>
-          <button onClick={()=>signIn('google')} className="bg-black text-white w-full">Sign In with google</button>
-          
+          <button onClick={() => signIn('github')} className="flex items-center justify-center w-full mt-4 py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800">
+            <SiGithub className="mr-2" />
+            Sign In with GitHub
+          </button>
+          <button onClick={() => signIn('google')} className="flex items-center justify-center w-full mt-2 py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600">
+            <SiGoogle className="mr-2" />
+            Sign In with Google
+          </button>
 
-          <p className="mt-10 text-center text-sm text-gray-500">
+          <p className="text-gray-500 mt-4 text-sm text-center">
             Not a member?{' '}
-            <a href="/register" className="font-semibold leading-6 text-blue-600 hover:text-blue-500">
+            <a href="/register" className="text-blue-500 hover:underline">
               Sign Up
             </a>
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 }

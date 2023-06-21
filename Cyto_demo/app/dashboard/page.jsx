@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import { useSession, signOut } from 'next-auth/react';
 import { useEffect } from 'react';
 import { FaHome, FaFileAlt, FaUsers, FaCog, FaSignOutAlt } from 'react-icons/fa';
@@ -147,4 +147,3 @@ export default function Dashboard() {
   );
 }
 
-export const getServerSideProps = auth;
