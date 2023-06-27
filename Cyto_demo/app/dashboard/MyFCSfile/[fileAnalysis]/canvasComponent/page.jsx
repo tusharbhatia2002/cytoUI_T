@@ -12,25 +12,7 @@ const Page = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const { data: session,status } = useSession();
-
-  useEffect(() => {
-    if (!session) {
-      window.location.href = '/login'; // Redirect to login page if not authenticated
-    }
-  }, [session]);
-
-  const handleSignOut = () => {
-    signOut({ callbackUrl: '/' }); // Sign out and redirect to home page
-  };
-
-  if (status === "loading") {
-    return "Redirecting to login page"; 
-  }
-
-  if (status === "unauthenticated") {
-    return null;
-  }
+  
 
   return (
     <div className="flex h-screen bg-gray-100">

@@ -21,7 +21,7 @@ export default function Dashboard() {
   };
 
   if (status === "loading") {
-    return "Redirecting to login page"; 
+    return null; 
   }
 
   if (status === "unauthenticated") {
