@@ -5,6 +5,7 @@
   import MenuBar from "./MenuBar";
   import Sidebar from "./Sidebar";
   import usePlotStore from "@/app/store";
+
   // import PlotCreator from "../functionalComponents/Plotcreator";
   // import ServerRenderedComponent from "../functionalComponents/PlotDisplayer";
 
@@ -12,6 +13,7 @@
   import axios from 'axios';
 
   const CanvasPage = () => {
+    
     const [showMenuBar, setShowMenuBar] = useState(false);
     const [showPlotCreator, setShowPlotCreator] = useState(false);
     const [channelNames, setChannelNames] = useState([]);

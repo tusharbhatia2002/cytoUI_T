@@ -1,10 +1,11 @@
-"use client"
+"use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { fabric } from 'fabric';
 import ZoomSlider from './ZoomSlider';
 import PlotCreator from '@/app/functionalComponents/Plotcreator';
 import ServerRenderedComponent from '@/app/functionalComponents/PlotDisplayer';
 import LoadingIndicator from '@/app/functionalComponents/LoadingIndicator';
+
 
 const Canvas = ({
   channelNames,
@@ -19,6 +20,7 @@ const Canvas = ({
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCreatePlotButton, setShowCreatePlotButton] = useState(false);
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
+  const [showDeleteButton, setShowDeleteButton] = useState(false);
   const canvasRef = useRef(null);
   const fabricCanvas = useRef(null);
   const imageObject = useRef(null);
@@ -41,12 +43,25 @@ const Canvas = ({
   };
 
   const handleCanvasDoubleClick = (event) => {
-    setShowCreatePlotButton(true);
-    setButtonPosition({ x: event.pointer.x, y: event.pointer.y });
+    const { target } = event;
+    if (target && target.type === 'image') {
+      setShowDeleteButton(true);
+      setButtonPosition({ x: event.pointer.x, y: event.pointer.y });
+    }
+    else {
+      setShowCreatePlotButton(true);
+      setButtonPosition({ x: event.pointer.x, y: event.pointer.y });
+    }
+  };
+
+  const handleDeleteImage = () => {
+    fabricCanvas.current.remove(imageObject.current);
+    setShowDeleteButton(false);
   };
 
   const handleCanvasClick = () => {
     setShowCreatePlotButton(false);
+    setShowDeleteButton(false);
   };
 
   useEffect(() => {
@@ -128,7 +143,7 @@ const Canvas = ({
     <div className="canvas-container w-full overflow-hidden bg-white">
       <div
         className="relative"
-        style={{ cursor: showCreatePlotButton ? 'auto' : 'crosshair' }}
+        style={{ cursor: showCreatePlotButton || showDeleteButton ? 'auto' : 'crosshair' }}
       >
         <canvas ref={canvasRef} className="mb-4" />
         {showCreatePlotButton && (
@@ -148,6 +163,20 @@ const Canvas = ({
               handlePlotCreation={handlePlotCreation}
             />
           </div>
+        )}
+        {showDeleteButton && (
+          <button
+            className="absolute left-0 top-0 bg-red-500 text-white rounded"
+            style={{
+              left: buttonPosition.x,
+              top: buttonPosition.y,
+              padding: '4px',
+              zIndex: 1,
+            }}
+            onClick={handleDeleteImage}
+          >
+            Delete
+          </button>
         )}
         {showPlotCreator && (
           <div className="absolute top-5 left-4 w-90 h-150 bg-gray-200 bg-opacity-40 z-10 mx-4 my-5 px-10 py-10 ">

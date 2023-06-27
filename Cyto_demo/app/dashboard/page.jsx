@@ -8,7 +8,7 @@ import auth from '../api/auth';
 
 
 export default function Dashboard() {
-  const { data: session } = useSession();
+  const { data: session,status } = useSession();
 
   useEffect(() => {
     if (!session) {
@@ -19,6 +19,14 @@ export default function Dashboard() {
   const handleSignOut = () => {
     signOut({ callbackUrl: '/' }); // Sign out and redirect to home page
   };
+
+  if (status === "loading") {
+    return "Redirecting to login page"; 
+  }
+
+  if (status === "unauthenticated") {
+    return null;
+  }
 
   return (
     <div className="flex h-screen bg-gray-100">
