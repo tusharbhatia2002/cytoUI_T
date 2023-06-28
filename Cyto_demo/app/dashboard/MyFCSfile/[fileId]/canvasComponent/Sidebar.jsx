@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import ParametersSection from "./parameters";
 import CompensationSection from "./CompensationSection";
 
-const Sidebar = () => {
+const Sidebar = ({fileId}) => {
+  // console.log(fileId)
   const [activeButton, setActiveButton] = useState(null);
   const [showCompensationSection, setShowCompensationSection] = useState(false);
 
@@ -65,10 +66,10 @@ const Sidebar = () => {
       </aside>
       <div className="flex-grow">
         {activeButton === "parameters" && (
-          <ParametersSection onClose={handleCloseParameters} />
+          <ParametersSection onClose={handleCloseParameters} fileId={fileId} />
         )}
         {activeButton === "compensation" && (
-          <CompensationSection onClose={handleCloseCompensation} />
+          <CompensationSection onClose={handleCloseCompensation} fileId={fileId} />
         )}
       </div>
     </div>

@@ -3,7 +3,8 @@ import React from "react";
 import {useState,useEffect} from "react";
 import axios from "axios";
 
-const ParametersSection = ({ onClose }) => {
+const ParametersSection = ({ onClose,fileId }) => {
+    // console.log("fileId",fileId);
     const [parameters, setParameters] = useState([]); // [parameter1, parameter2, ...
     const [tableWidth, setTableWidth] = useState("w-full");
     useEffect(() => {
@@ -11,7 +12,7 @@ const ParametersSection = ({ onClose }) => {
     },[])
     const getparameters=async() =>{
       try {
-        const response = await axios.get('http://localhost:8000/api/get-column-names');
+        const response = await axios.get(`http://localhost:8000/api/get-column-names?file_id=${fileId}`);
         if (response.status === 200) {
           setParameters(response.data.columnNames);
           setIsLoading(false);

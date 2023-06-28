@@ -8,40 +8,59 @@ import {
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
-import Link from "next/Link";
+import Link from "next/link";
 import HeaderProfileNav from "@/app/HeaderProfileNav";
 import axios from "axios";
 import LoadingIndicator from "../../../functionalComponents/LoadingIndicator";
 import { useRouter } from "next/router";
 // import { useRouter } from 'next/router'
 
-const SpilloverMatrix = () => {
-  const matrixData = [
-    [0.8, 0.1, 0.2],
-    [0.3, 0.9, 0.4],
-    [0.5, 0.2, 0.7],
-    [0.4, 0.6, 0.3],
-  ];
+const SpilloverMatrix = ({params}) => {
+  console.log(params);
+  // const router = useRouter();
+  const fileId = params.fileId;
+  // const { fileId } = useGlobalContext();
+  const [matrixData, setMatrixData] = useState([]);
+
+  useEffect(() => {
+    fetchSpilloverMatrix();
+  }, []);
+
+  // Function to fetch the spillover matrix from the backend
+  async function fetchSpilloverMatrix() {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/get-spillover-matrix?file_id=${fileId}`);
+      const spilloverMatrix = response.data.spilloverMatrix;
+      const formattedMatrix = Object.keys(spilloverMatrix).map((channel) => {
+        return [channel, ...Object.values(spilloverMatrix[channel])];
+      });
+      setMatrixData(formattedMatrix);
+    } catch (error) {
+      console.error("Error fetching spillover matrix:", error);
+      throw error;
+    }
+  }
 
   return (
     <div className="p-4 overflow-y-auto">
       <table className="w-full bg-white rounded-lg shadow-md">
         <thead className="bg-gray-200">
           <tr>
-            <th className="py-2 px-4 border-b text-black">Channel 1</th>
-            <th className="py-2 px-4 border-b text-black">Fluorochrome 1</th>
-            <th className="py-2 px-4 border-b text-black">Fluorochrome 2</th>
+            <th className="py-2 px-4 border-b text-black">Channel</th>
+            {matrixData[0] &&
+              matrixData[0].slice(1).map((columnHeader, index) => (
+                <th className="py-2 px-4 border-b text-black" key={index}>
+                
+                </th>
+              ))}
           </tr>
         </thead>
         <tbody>
           {matrixData.map((row, index) => (
             <tr className="hover:bg-gray-100" key={index}>
               {row.map((value, idx) => (
-                <td
-                  className="py-2 px-4 border-b border-r text-black"
-                  key={idx}
-                >
-                  {value.toFixed(2)}
+                <td className="py-2 px-4 border-b border-r text-black" key={idx}>
+                  {idx === 0 ? value : value.toFixed(2)}
                 </td>
               ))}
             </tr>
@@ -52,7 +71,7 @@ const SpilloverMatrix = () => {
   );
 };
 
-const FileAnalysis = () => {
+const FileAnalysis = ({params}) => {
   const { data: session,status } = useSession();
 
   useEffect(() => {
@@ -66,7 +85,7 @@ const FileAnalysis = () => {
   };
 
   if (status === "loading") {
-    return "Redirecting to login page"; 
+    return null;
   }
 
   if (status === "unauthenticated") {
@@ -75,14 +94,13 @@ const FileAnalysis = () => {
 
   const [columnNames, setColumnNames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const fileId =params.fileId;
   useEffect(() => {
     getColumnNames();
   }, []);
   const getColumnNames = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/get-column-names"
-      );
+      const response = await axios.get(`http://localhost:8000/api/get-column-names?file_id=${fileId}`);
       if (response.status === 200) {
         setColumnNames(response.data.columnNames);
         setIsLoading(false);
@@ -217,7 +235,7 @@ const FileAnalysis = () => {
             />
             <button>
               <a
-                href="/dashboard/MyFCSfile/1/canvasComponent"
+                href={`/dashboard/MyFCSfile/${fileId}/canvasComponent`}
                 className="text-white hover:text-cyan-300 text-lg font-medium bg-blue-700 rounded-lg px-3"
               >
                 Open in Canvas
@@ -260,7 +278,7 @@ const FileAnalysis = () => {
           <div className="flex flex-col h-1/3">
             <h2 className="text-2xl font-bold mb-4 text-black">Compensation</h2>
             <div className="flex-1 h-2/3 bg-white rounded-lg overflow-y-auto shadow-md">
-              <SpilloverMatrix />
+              <SpilloverMatrix params={params} />
             </div>
           </div>
         </div>

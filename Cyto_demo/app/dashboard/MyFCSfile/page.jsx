@@ -3,7 +3,7 @@
 import React,{useState,useEffect,useContext} from 'react';
 import {useSession, signOut} from 'next-auth/react';
 import { FaHome, FaFileAlt, FaUsers, FaCog, FaSignOutAlt } from 'react-icons/fa';
-import Link from "next/Link";
+import Link from "next/link";
 import HeaderProfileNav from '../HeaderProfileNav';
 import FileUploaderButton from '@/app/functionalComponents/Fileuploaderbutton';
 import LoadingIndicator from '@/app/functionalComponents/LoadingIndicator';
@@ -40,6 +40,7 @@ export default function MyFCSfile() {
   const [isLoading, setLoading] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState('');
   const [uploadedFileSize, setUploadedFileSize] = useState('');
+  const [fileId, setFileId] = useState('');
   
  
 
@@ -57,6 +58,7 @@ export default function MyFCSfile() {
         const bjhhj = response.data.columnNames;
         console.log(bjhhj);
         setChannelNames(bjhhj);
+        setFileId(response.data.fileId);
         setFileParsed(true);
         setUploadedFileName(file.name);
         setUploadedFileSize(formatFileSize(file.size));
@@ -217,7 +219,7 @@ export default function MyFCSfile() {
               )}
               {isFileParsed && (
                 <tr>
-                  <td className="py-2 px-4 border-b border-r"><Link href= "/dashboard/MyFCSfile/1" >
+                  <td className="py-2 px-4 border-b border-r"><Link href= {`/dashboard/MyFCSfile/${fileId}`} >
                       <span className="text-blue-500 hover:text-blue-700 transition-colors">
                         {uploadedFileName}
                       </span>

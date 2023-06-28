@@ -1,3 +1,4 @@
+import json
 from fastapi import FastAPI, UploadFile, File , Depends, HTTPException
 from fastapi import Request
 from tempfile import NamedTemporaryFile
@@ -6,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-import pandas as pd 
+import pandas as pd
 import matplotlib.pyplot as plt
 import mpld3
 import subprocess
@@ -18,7 +19,10 @@ import asyncio
 import io
 import base64
 from pymongo import MongoClient
-import certifi
+import numpy as np
+import flowio
+import flowutils
+import uuid
 # import flowkit as fk
 
 app = FastAPI()
@@ -45,17 +49,19 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 
 # MOngoDB
-mongodb_connection_string="mongodb+srv://ojas21101:ojas1234@clusterviz.tjmyjct.mongodb.net/?retryWrites=true&w=majority"
-mongo_client = MongoClient(mongodb_connection_string, tlsCAFile=certifi.where())
+mongodb_connection_string=os.environ.get("MONGODB_CONNECTION_key")
+if mongodb_connection_string is None:
+    raise ValueError("MongoDB connection string not found in environment variables.")
+mongo_client = MongoClient(mongodb_connection_string)
 db = mongo_client["clusterviz"]
+spillover_matrix_collection = db["spillover_matrix"]
+class FileData(BaseModel):
+    columnNames: list
+    spilloverMatrix: list
+
 @app.post("/api/convert-fcs-to-csv")
 async def convert_fcs_to_csv(file: UploadFile = File(...) ):
-    # print("Received file:", file.filename)
-    # config = authorized_configs.get(token)
-    # if not config:
-    #     raise HTTPException(status_code=401, detail="Unauthorized")
-
-    # Save the uploaded FCS file to a temporary file
+    # Save the uploaded FCS file to a temporary file`
     with NamedTemporaryFile(suffix=".fcs", delete=False) as temp_fcs:
         temp_fcs.write(await file.read())
         temp_fcs_path = temp_fcs.name
@@ -66,30 +72,103 @@ async def convert_fcs_to_csv(file: UploadFile = File(...) ):
     output_csv_path = f"{temp_fcs_path}.csv"
     # global fcs_path
     # fcs_path = temp_fcs_path
-    if os.path.exists(output_csv_path):
-        with open(output_csv_path, "r") as csv_file:
-            reader = csv.reader(csv_file)
-            column_names = next(reader)
-            # db["column_names"].insert_one({"columnNames": column_names})
+    # if os.path.exists(output_csv_path):
+    #     with open(output_csv_path, "r") as csv_file:
+    #         reader = csv.reader(csv_file)
+    #         column_names = next(reader)
+    #         # db["column_names"].insert_one({"columnNames": column_names})
 
-        # Delete the temporary files
-        os.remove(temp_fcs_path)
+    #     # Delete the temporary files
+        
+    #     os.remove(temp_fcs_path)
+    #     print(file_id)
 
-        return {"columnNames": column_names}
+    #     # Store the column names in the database
+    #     db["column_names"].update_one(
+    #         {"_id": file_id},
+    #         {"$set": {"columnNames": column_names}},
+    #         upsert=True,
+    #     )
+
+    #     return {"fileId": file_id, "columnNames": column_names}
+
+
+        # return {"columnNames": column_names}
 
     try:
+        file_contents = await file.read()
+        file_id = str(uuid.uuid4())
+        print (file_id)
+
+        # Store the uploaded FCS file in the database
+        db["files"].insert_one({
+            "fileId": file_id,
+            "filename": file.filename,
+            "timestamp": datetime.now(),
+            "fcsContents": base64.b64encode(file_contents).decode('utf-8'),
+            "isConverted": False,
+        })
+
+
         # Execute your FCS to CSV conversion script
         command = f"python fcs_csv.py {temp_fcs_path} {output_csv_path}"
         subprocess.run(command, shell=True, check=True)
 
         # Read the CSV file and extract column names
         with open(output_csv_path, "r") as csv_file:
-            reader = csv.reader(csv_file)
+            reader = csv.reader(csv_file)   
             column_names = next(reader)
-            db["column_names"].insert_one({"columnNames": column_names})
-        os.remove(temp_fcs_path)
+            # print(column_names)
+        with open(output_csv_path, "rb") as csv_file:
+            csv_contents = csv_file.read()
+        print("chal rha hai")
+        try:
+            db["files"].update_one(
+                {"fileId": file_id},
+                {"$set": {"csvContents": base64.b64encode(csv_contents).decode('utf-8'), "isConverted": True}},
+            )
+        except Exception as e:
+            print("Error updating 'files' collection:", str(e))
 
-        return {"columnNames": column_names}
+        print("chal rha hai abhi toh")
+
+            
+            # db["column_names"].insert_one({"columnNames": column_names})
+        db["column_names"].update_one(
+            {"_id": file_id},
+            {"$set": {"columnNames": column_names}},
+            upsert=True,
+        )
+        fcs_file = flowio.FlowData(temp_fcs_path)
+        if 'spillover' in fcs_file.text:
+            spillover_matrix, column_headers = flowutils.compensate.get_spill(fcs_file.text['spillover'])
+        else:
+            # If spillover matrix doesn't exist, create an empty matrix with all values set to 0
+            spillover_matrix = np.zeros((len(column_names), len(column_names)))
+            column_headers=column_names
+            print("chal rha agar yeh spillover ni hai toh")
+        
+        df_spillover_matrix = pd.DataFrame(spillover_matrix, columns=column_headers)
+        df_json = df_spillover_matrix.to_json(orient="columns")
+
+# Convert the JSON to a dictionary
+        spillover_data = json.loads(df_json)
+
+
+        spillover_matrix_collection.update_one(
+            {"_id": file_id},
+            {"$set": {"spilloverMatrix": spillover_data}},
+            upsert=True,
+        )
+
+        print("Saved spillover matrix in MongoDB collection 'spillover_matrix'")
+        os.remove(temp_fcs_path) 
+
+
+        return {"fileId": file_id, "columnNames": column_names}
+
+        
+        # return {"columnNames": column_names}
 
     except Exception as e:
         os.remove(temp_fcs_path)
@@ -97,6 +176,7 @@ async def convert_fcs_to_csv(file: UploadFile = File(...) ):
 
 
 class PlotRequest(BaseModel):
+    # file_id: str
     x_column: str
     y_column: str
     x_scale: str
@@ -104,12 +184,13 @@ class PlotRequest(BaseModel):
 
 
 @app.post("/api/generate-plots")
-async def generate_plots(request: PlotRequest ):
+async def generate_plots(request: PlotRequest ,file_id: str ):
     # config = authorized_configs.get(token)
     # if not config:
     #     raise HTTPException(status_code=401, detail="Unauthorized")
     # # Small delay to allow time for output_csv_path to be updated
     await asyncio.sleep(0.1)
+    # file_id=request.file_id
 
     x_column = request.x_column
     y_column = request.y_column
@@ -120,7 +201,15 @@ async def generate_plots(request: PlotRequest ):
         print("Y Column:", y_column)
         print("X Scale:", x_scale)
         print("Y Scale:", y_scale)
-        df = pd.read_csv(output_csv_path)
+        file_data = db["files"].find_one({"fileId": file_id})
+        if not file_data or not file_data.get("isConverted") or not file_data.get("csvContents"):
+            return {"error": "CSV file not found or not converted"}
+
+        # Decode the CSV contents from base64
+        csv_contents = base64.b64decode(file_data["csvContents"])
+
+        # Read the CSV contents into a Pandas DataFrame
+        df = pd.read_csv(io.BytesIO(csv_contents))
         print("Returning response...")
         print("Dataframe shape:", df.shape)
         print("Columns:", df.columns)
@@ -160,89 +249,23 @@ async def generate_plots(request: PlotRequest ):
         # Handle any errors that occur during plot generation
         return {"error": str(e)}
 
-# Authenticate user
-# Authenticate user
-async def authenticate_user(username: str, password: str, config: dict):
-    if username == "admin" and password == "password":
-        return {"username": username, "config": config}
-    return None
-
-
-
-# Verify password
-async def verify_password(plain_password: str, hashed_password: str):
-    return await asyncio.to_thread(pwd_context.verify, plain_password, hashed_password)
-
-
-# Create access token
-async def create_access_token(data: dict, expires_delta: timedelta):
-    to_encode = data.copy()
-    expire = datetime.utcnow() + expires_delta
-    to_encode.update({"exp": expire})
-    encoded_jwt = await asyncio.to_thread(jwt.encode, to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-class User(BaseModel):
-    username: str
-    password: str
-    config: dict
-# Routes
-@app.post("/api/login")
-async def login(request: Request):
-    data = await request.json()
-    username = data.get("username")
-    password = data.get("password")
-    config = data.get("config")
-
-    print("Received Username:", username)
-    print("Received Password:", password)
-
-    # Your authentication logic here
-
-    if username == "admin" and password == "password":
-        user = {"username": username}
-        access_token = await create_access_token(
-            data={"sub": user["username"],"config": config},
-            expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
-        )
-        return {"access_token": access_token, "token_type": "bearer"}
-    else:
-        raise HTTPException(status_code=401, detail="Invalid username or password")
-
-@app.get("/api/protected")
-async def protected(token: str = Depends(oauth2_scheme)):
-    try:
-        payload = await asyncio.to_thread(jwt.decode, token, SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get("sub")
-        if username is None:
-            raise HTTPException(status_code=401, detail="Invalid authentication token")
-
-        # Your authorization logic here
-
-        return {"message": "You have accessed the protected endpoint"}
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid authentication token")
 # using db to get the columnnames
 @app.get("/api/get-column-names")
-async def get_column_names():
-    collection = db["column_names"]
-    document = collection.find_one()
+async def get_column_names(file_id: str):
+    document = db["column_names"].find_one({"_id": file_id})
     if document:
         column_names = document["columnNames"]
         return {"columnNames": column_names}
     else:
         return {"columnNames": []}
 
-# async def extract_div_and_script(html):
-#     soup = BeautifulSoup(html, 'html.parser')
-#     div_element = soup.find(
-#         'div', id=lambda value: value and value.startswith('fig_el'))
-#     script_element = soup.find('script')
+@app.get("/api/get-spillover-matrix")
+async def get_spillover_matrix(file_id: str):
+    document = spillover_matrix_collection.find_one({"_id": file_id})
+    if document:
+        spillover_matrix = document["spilloverMatrix"]
+        return {"spilloverMatrix": spillover_matrix}
+    else:
+        return {"spilloverMatrix": []}
 
-#     div_id = div_element['id'] if div_element else ''
-#     script_code = script_element.string if script_element else ''
 
-#     print(div_id)
-#     print(script_code)
-
-    # return div_id, script_code

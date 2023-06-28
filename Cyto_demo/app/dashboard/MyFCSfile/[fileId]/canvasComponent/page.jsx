@@ -2,15 +2,28 @@
 import React, { useState,useEffect } from 'react';
 import { FaHome, FaFileAlt, FaUsers, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import HeaderProfileNav from '../../../HeaderProfileNav';
-import Link from "next/Link";
+import Link from "next/link";
 import CanvasPage from "./canvaspage";
 import { useSession, signOut } from "next-auth/react";
-const Page = () => {
+const Page = ({params}) => {
+  const { data: session,status } = useSession();
+
+
+  const fileId=params.fileId
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+  if (status === "loading") {
+    return null; 
+  }
+
+  if (status === "unauthenticated") {
+    return window.location.href='/login'
+  }
+
+
 
   
 
@@ -57,10 +70,14 @@ const Page = () => {
                 </a>
               </li>
               <li>
-                <a href="/" className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded">
+              <button
+                  onClick={() => signOut()}
+                  className="flex items-center text-gray-700 hover:bg-gray-200 px-4 py-2 rounded"
+                >
                   <FaSignOutAlt className="mr-2" />
                   Sign Out
-                </a>
+                </button>
+
               </li>
             </ul>
           </div>
@@ -81,7 +98,7 @@ const Page = () => {
         {/* Content */}
         <div className="flex-1 bg-gradient-to-r from-cyan-100 to-blue-300 overflow-y-auto overflow-x-auto mt-0 px-0">
         <div className="flex-grow mt-0 px-0">
-            <CanvasPage />
+            <CanvasPage fileId={fileId}  />
         </div>
         </div>
       </div>
