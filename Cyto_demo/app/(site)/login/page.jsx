@@ -35,6 +35,16 @@ export default function Login() {
     });
   };
 
+  function handleSignIN(platform) {
+    console.log(platform, "here")
+    const timestamp = Date.now();
+    localStorage.setItem(
+      "timestamp",
+      timestamp
+    )
+    signIn(platform)
+  }
+
   return (
     <div className="bg-gradient-to-r from-cyan-100 to-blue-300 min-h-screen flex items-center justify-center">
       <div className="flex flex-col items-center justify-center min-h-screen">
@@ -107,11 +117,11 @@ export default function Login() {
             </div>
 
           </form>
-          <button onClick={() => signIn('github')} className="flex items-center justify-center w-full mt-4 py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800">
+          <button onClick={() => handleSignIN('github')} className="flex items-center justify-center w-full mt-4 py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800">
             <SiGithub className="mr-2" />
             Sign In with GitHub
           </button>
-          <button onClick={() => signIn('google')} className="flex items-center justify-center w-full mt-2 py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600">
+          <button onClick={() => handleSignIN('google')} className="flex items-center justify-center w-full mt-2 py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600">
             <SiGoogle className="mr-2" />
             Sign In with Google
           </button>

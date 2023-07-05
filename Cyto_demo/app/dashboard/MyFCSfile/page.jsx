@@ -7,7 +7,6 @@ import Link from "next/link";
 import HeaderProfileNav from '../HeaderProfileNav';
 import FileUploaderButton from '@/app/functionalComponents/Fileuploaderbutton';
 import LoadingIndicator from '@/app/functionalComponents/LoadingIndicator';
-import auth from '@/app/api/auth';
 
 
 //;
@@ -17,22 +16,11 @@ export default function MyFCSfile() {
   const { data: session ,status} = useSession();
 
   useEffect(() => {
-    if (!session) {
+    if (!session && status === "unauthenticated") {
       window.location.href = '/login'; // Redirect to login page if not authenticated
     }
-  }, [session]);
+  }, [session, status]);
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: '/' }); // Sign out and redirect to home page
-  };
-
-  if (status === "loading") {
-    return "Redirecting to login page"; 
-  }
-
-  if (status === "unauthenticated") {
-    return null;
-  }
   
   const [channelNames,setChannelNames]=useState([])
   const [isFileSelected, setFileSelected] = useState(false);
@@ -257,4 +245,3 @@ export default function MyFCSfile() {
 
 
 
-export const getServerSideProps = auth;

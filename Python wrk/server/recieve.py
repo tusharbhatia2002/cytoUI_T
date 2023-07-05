@@ -5,7 +5,7 @@ from tempfile import NamedTemporaryFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
-from jose import JWTError, jwt
+# from jose import JWTError, jwt
 from datetime import datetime, timedelta
 import pandas as pd
 import matplotlib.pyplot as plt

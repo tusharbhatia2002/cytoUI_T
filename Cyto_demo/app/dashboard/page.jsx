@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { FaHome, FaFileAlt, FaUsers, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import HeaderProfileNav from './HeaderProfileNav';
 import Link from 'next/link';
-import auth from '../api/auth';
+import StatisticsComponent from './StatisticsComponent';
 
 
 export default function Dashboard() {
@@ -27,6 +27,8 @@ export default function Dashboard() {
   if (status === "unauthenticated") {
     return null;
   }
+
+  const loginDate = new Date(Number(localStorage.getItem("timestamp"))).toDateString()
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -114,6 +116,25 @@ export default function Dashboard() {
         {/* Content */}
         <div className="flex-1 p-4 bg-gradient-to-r from-cyan-100 to-blue-300">
           {/* Add your content here */}
+
+          {/* loginInformation */}
+          <div className="shadow-lg rounded-xl h-1/3 md:w-4/12 mt-8 md:ml-2 p-4 bg-white bg-white text-gray-700 relative overflow-hidden">
+            <div className="w-full">
+              <p className="text-black text-bold text-2xl mb-4">
+                User Information
+              </p>
+              <div className="flex items-center justify-between text-black">
+                <p>Hello {session?.user?.name}</p>
+              </div>
+              <br></br>
+              <div className="flex items-center justify-between text-black">
+                <p>You Last Logged In at: {loginDate}</p>
+              </div>
+              
+            </div>
+          </div>
+
+          {/* taskProgress */}
           <div className="shadow-lg rounded-xl h-1/3 md:w-4/12 mt-8 md:ml-2 p-4 bg-white bg-white text-gray-700 relative overflow-hidden">
             <div className="w-full">
               <p className="text-black text-bold text-2xl font-light mb-4">
@@ -149,6 +170,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
