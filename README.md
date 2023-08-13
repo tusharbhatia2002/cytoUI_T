@@ -55,7 +55,6 @@ The Cyto UI tool offers numerous benefits and advantages for flow cytometry data
 <img width="1705" alt="SIMS Portal Landing Page" src="Picture4.jpg">
 
 <img width="1705" alt="SIMS Portal Landing Page" src="Picture6.jpg">
-
 <img width="1705" alt="SIMS Portal Landing Page" src="Picture5.jpg">
 
 
