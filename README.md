@@ -1,6 +1,6 @@
 # CytoUI- Empower your Flow Cytometry Analysis
 
-**Note:** This project was developed during the summer research internship tensure at IIIT Delhi. This project is solely meant for research and is not meant for commercial usage.
+**Note:** This project was developed during the summer research internship tenure at IIIT Delhi. This project is solely meant for research and is not meant for commercial usage. Please refrain from using the code.
 
 ## Objectives:
 
