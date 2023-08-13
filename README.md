@@ -1,4 +1,3 @@
-![image](https://github.com/tusharbhatia2002/cytoUI_T/assets/80309308/647d44a5-6c87-4c74-bb15-6b5fd64e8f35)# cytoUI_T
 # CytoUI- Empower your Flow Cytometry Analysis
 
 **Note:** This project was developed during the summer research internship tensure at IIIT Delhi. This project is solely meant for research and is not meant for commercial usage.
