@@ -6,11 +6,13 @@
 ## Objectives:
 
 The main objectives of the CytoUI project are:
+
 a. Simplify Flow Cytometry Analysis:
 The primary objective of CytoUI is to simplify the analysis of flow cytometry data. By providing a user-friendly interface and a comprehensive set of analysis tools, we aim to reduce the barrier to entry for researchers and clinicians who need to become more familiar with complex data analysis techniques.
+
 b. Enhance Data Visualization:
 Effective data visualization is essential for gaining insights from flow cytometry data. CytoUI focuses on providing powerful visualization capabilities, allowing users to explore their data in a visual and interactive manner.
-![image](https://github.com/tusharbhatia2002/cytoUI_T/assets/80309308/71853132-2e9e-44ec-841a-25f21e5f1b13)
+
 
 ## Features:
 
